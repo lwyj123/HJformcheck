@@ -27,7 +27,13 @@
     var HJformcheck = {
         version: '0.0.1',
         cache: [],
-        add: function() {
+        add: function(dom, rules) {
+            //兼容jquery
+            var mydom = dom;
+            if(jQuery && dom instanceof jQuery) {
+                mydom = dom[0];
+            }
+
             var self = this;
             for (var i = 0, rule; rule = rules[i++];) {
                 (function(rule) {
@@ -36,9 +42,9 @@
                     self.cache.push(function() {
                         var strategy = strategyAry.shift();
 
-                        strategyAry.unshift(dom.value);
+                        strategyAry.unshift(mydom.value);
                         strategyAry.push(errorMsg);
-                        return strategies[strategy].apply(dom, strategyAry);
+                        return strategies[strategy].apply(mydom, strategyAry);
                     });
                 })(rule)
             }

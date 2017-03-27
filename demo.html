@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <script src="HJformcheck.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+</head>
+
+<body>
+    <form id="test">
+        <input type="text" name="email">
+        <input type="text" name="phonenumber">
+        <input type="submit" value="Submit" />
+    </form>
+</body>
+<script type="text/javascript">
+var registerForm = document.getElementById('test');
+var email = document.getElementById('test').email;
+var phone = $("#test > input[name=phonenumber]")
+var validataFunc = function() {
+    var validator = HJformcheck;
+    validator.add(email, [{
+        strategy: 'isNonEmpty',
+        errorMsg: '邮箱不能为空'
+    }, {
+        strategy: 'minLength:6',
+        errorMsg: '邮箱长度不能小于10 位'
+    }]);
+
+    validator.add(phone, [{
+        strategy: 'isNonEmpty',
+        errorMsg: '电话不能为空'
+    }, {
+        strategy: 'minLength:6',
+        errorMsg: '电话长度不能小于10 位'
+    }]);
+
+    var errorMsg = validator.start();
+    return errorMsg;
+}
+registerForm.onsubmit = function() {
+    var errorMsg = validataFunc();
+    if (errorMsg) {
+        alert(errorMsg);
+        return false;
+    }
+
+};
+</script>
+
+</html>
