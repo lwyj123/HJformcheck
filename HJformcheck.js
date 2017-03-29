@@ -59,6 +59,16 @@
         }
     };
 
+    /**
+     * extend strategies
+     * @param  {String} strategyName    the name of this strategy
+     * @param  {Function} strategy      the strategy
+     * @return {Boolean} add strategy successed or not(already have or bad format)
+     */
+    HJformcheck.prototype.extend = function(strategyName, strategy) {
+        strategies[strategyName] = strategy;
+    }
+
 
 
     window.HJformcheck = HJformcheck;

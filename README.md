@@ -19,7 +19,7 @@ Example
 
 ```js
 var validataFunc = function() {
-    var validator = HJformcheck;
+    var validator = new HJformcheck();
     validator.add(email, [{
         strategy: 'isNonEmpty',
         errorMsg: '邮箱不能为空'
