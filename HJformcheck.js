@@ -24,40 +24,39 @@
     };
 
 
-    var HJformcheck = {
-        version: '0.0.1',
-        cache: [],
-        add: function(dom, rules) {
-            //兼容jquery
-            var mydom = dom;
-            if(jQuery && dom instanceof jQuery) {
-                mydom = dom[0];
-            }
-
-            var self = this;
-            for (var i = 0, rule; rule = rules[i++];) {
-                (function(rule) {
-                    var strategyAry = rule.strategy.split(':');
-                    var errorMsg = rule.errorMsg;
-                    self.cache.push(function() {
-                        var strategy = strategyAry.shift();
-
-                        strategyAry.unshift(mydom.value);
-                        strategyAry.push(errorMsg);
-                        return strategies[strategy].apply(mydom, strategyAry);
-                    });
-                })(rule)
-            }
-        },
-        start: function() {
-            for (var i = 0, validatorFunc; validatorFunc = this.cache[i++];) {
-                var errorMsg = validatorFunc();
-                if (errorMsg) {
-                    return errorMsg;
-                }
-            }
+    function HJformcheck(){
+        this.cache = [];
+    };
+    HJformcheck.prototype.version = '0.0.1';
+    HJformcheck.prototype.add = function(dom, rules) {
+        //兼容jquery
+        var mydom = dom;
+        if(jQuery && dom instanceof jQuery) {
+            mydom = dom[0];
         }
 
+        var self = this;
+        for (var i = 0, rule; rule = rules[i++];) {
+            (function(rule) {
+                var strategyAry = rule.strategy.split(':');
+                var errorMsg = rule.errorMsg;
+                self.cache.push(function() {
+                    var strategy = strategyAry.shift();
+
+                    strategyAry.unshift(mydom.value);
+                    strategyAry.push(errorMsg);
+                    return strategies[strategy].apply(mydom, strategyAry);
+                });
+            })(rule)
+        }
+    };
+    HJformcheck.prototype.start = function() {
+        for (var i = 0, validatorFunc; validatorFunc = this.cache[i++];) {
+            var errorMsg = validatorFunc();
+            if (errorMsg) {
+                return errorMsg;
+            }
+        }
     };
 
 
