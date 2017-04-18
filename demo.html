@@ -3,7 +3,9 @@
 
 <head>
     <meta charset="utf-8">
-    <script src="HJformcheck.js"></script>
+    <!-- <script src="HJformcheck.js"></script> -->
+    <script src="dist/HJformcheck.js"></script>
+
     <script src="http://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
 </head>
 
@@ -11,11 +13,11 @@
     <form id="test">
         <input type="text" name="email">
         <input type="text" name="phonenumber">
-        <input type="submit" value="Submit" />
+        <input id="btn" type="button" value="Submit" />
     </form>
 </body>
 <script type="text/javascript">
-var registerForm = document.getElementById('test');
+var btn = document.getElementById('btn');
 var email = document.getElementById('test').email;
 var phone = $("#test > input[name=phonenumber]")
 var validataFunc = function() {
@@ -39,7 +41,7 @@ var validataFunc = function() {
     var errorMsg = validator.start();
     return errorMsg;
 }
-registerForm.onsubmit = function() {
+btn.onclick = function() {
     var errorMsg = validataFunc();
     if (errorMsg) {
         alert(errorMsg);
