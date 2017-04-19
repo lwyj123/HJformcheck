@@ -1,5 +1,5 @@
 # HJformcheck
-华击工程表单检验组件
+华击工程表单检验组件，现代码已升级到es6
 
 # Install
 
