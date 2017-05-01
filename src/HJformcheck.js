@@ -25,7 +25,7 @@ class HJformcheck {
                     let funbody = /=>\s(.*?)$/.exec(rule.custom)[1];
 
                     param.push(mydom.value);
-                    let f = new Function('val', funbody);
+                    let f = new Function('val, errorMsg', `if((${rule.custom})(val)) return errorMsg`);
                     self.customcache.push(function() {
                         return f.apply(mydom, [mydom.value, rule.errorMsg]);
                     });  
