@@ -2,6 +2,8 @@ class HJformcheck {
 
     constructor() {
         this.cache = [];
+        //自定义部分cache
+        this.customcache = [];
     }
 
     add(dom, rules) {
@@ -14,25 +16,45 @@ class HJformcheck {
         let self = this;
         for (let i = 0, rule; rule = rules[i++];) {
             (function(rule) {
-                let strategyAry = rule.strategy.split(':');
-                let errorMsg = rule.errorMsg;
-                self.cache.push(function() {
-                    let strategy = strategyAry.shift();
+                //自定义
+                if(rule.custom) {
+                    let param = [];
+                    //正则解析出的数组
+                    let funparam = /^\((.*?)\)/.exec(rule.custom)[1];
+                    //正则解析出的内容
+                    let funbody = /=>\s(.*?)$/.exec(rule.custom)[1];
 
-                    strategyAry.unshift(mydom.value);
-                    strategyAry.push(errorMsg);
-                    return HJformcheck.strategies[strategy].apply(mydom, strategyAry);
-                });
-            })(rule)
+                    param.push(mydom.value);
+                    let f = new Function('val', funbody);
+                    self.customcache.push(function() {
+                        return f.apply(mydom, [mydom.value, rule.errorMsg]);
+                    });  
+
+                } else {
+                    let strategyAry = rule.strategy.split(':');
+                    let errorMsg = rule.errorMsg;
+                    self.cache.push(function() {
+                        let strategy = strategyAry.shift();
+                        strategyAry.unshift(mydom.value);
+                        strategyAry.push(errorMsg);
+                        return HJformcheck.strategies[strategy].apply(mydom, strategyAry);
+                    });
+                }
+            })(rule);
         }
     }
     start() {
+        let errorMsg;
         for (let i = 0, validatorFunc; validatorFunc = this.cache[i++];) {
-            let errorMsg = validatorFunc();
-            if (errorMsg) {
-                return errorMsg;
-            }
-        }        
+            errorMsg = validatorFunc();
+        }
+        for (let i = 0, validatorFunc; validatorFunc = this.customcache[i++];) {
+            errorMsg = validatorFunc();
+        }
+
+        if (errorMsg) {
+            return errorMsg;
+        }  
     }
     /**
      * extend strategies
@@ -47,7 +69,7 @@ class HJformcheck {
 }
 
 
-HJformcheck.version = "0.1";
+HJformcheck.version = "0.2";
 HJformcheck.strategies = {
     isNonEmpty: function(value, errorMsg) {
         if (value === '') {
@@ -75,7 +97,7 @@ HJformcheck.strategies = {
         }
     },
     isSame: function(value, value2, errorMsg) {
-        if (value != length) {
+        if (value != value2) {
             return errorMsg;
         }
     },        
